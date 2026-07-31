@@ -1,12 +1,17 @@
 import { auth } from '../../lib/auth';
 
-interface User {
+interface IPatientRegisterPayload {
   name: string;
   email: string;
   password: string;
 }
 
-const patientRegister = async (payload: User) => {
+interface IUserLoginPayload {
+  email: string;
+  password: string;
+}
+
+const patientRegister = async (payload: IPatientRegisterPayload) => {
   const { name, email, password } = payload;
 
   const data = await auth.api.signUpEmail({
@@ -24,6 +29,20 @@ const patientRegister = async (payload: User) => {
   return data;
 };
 
+const userLogin = async (payload: IUserLoginPayload) => {
+  const { email, password } = payload;
+
+  const data = await auth.api.signInEmail({
+    body: {
+      email,
+      password,
+    },
+  });
+
+  return data;
+};
+
 export const AuthService = {
   patientRegister,
+  userLogin,
 };
