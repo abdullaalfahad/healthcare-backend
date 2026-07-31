@@ -23,7 +23,19 @@ const createSpeciality = catchAsync(async (req, res) => {
   });
 });
 
+const deleteSpecility = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const speciality = await specialityService.deleteSpecility(id as string);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Speciality deleted successfully',
+    data: speciality,
+  });
+});
+
 export const specialityController = {
   getAllSpecialities,
   createSpeciality,
+  deleteSpecility,
 };

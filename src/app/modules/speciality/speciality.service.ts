@@ -13,7 +13,15 @@ const createSpeciality = async (payload: Speciality) => {
   return speciality;
 };
 
+const deleteSpecility = async (id: string) => {
+  const speciality = await prisma.speciality.delete({
+    where: { id },
+  });
+  return speciality;
+};
+
 export const specialityService = {
   getAllSpecialities,
+  deleteSpecility,
   createSpeciality,
 };
