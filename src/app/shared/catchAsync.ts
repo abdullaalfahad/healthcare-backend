@@ -9,8 +9,8 @@ export const catchAsync = (fn: asyncHandler) => {
     } catch (err) {
       res.status(500).json({
         success: false,
-        status: 'error',
-        message: (err as Error).message,
+        message: 'Something went wrong',
+        error: err instanceof Error ? err.message : String(err),
       });
     }
   };
