@@ -1,4 +1,5 @@
 import { auth } from '../../lib/auth';
+import { prisma } from '../../lib/prisma';
 
 interface IPatientRegisterPayload {
   name: string;
@@ -26,7 +27,22 @@ const patientRegister = async (payload: IPatientRegisterPayload) => {
     throw new Error('User registration failed');
   }
 
-  return data;
+  const patient = await prisma.$transaction(async (tx) => {
+    const newPatient = await tx.patient.create({
+      data: {
+        name,
+        email,
+        userId: data.user.id,
+      },
+    });
+
+    return newPatient;
+  });
+
+  return {
+    ...data,
+    patient,
+  };
 };
 
 const userLogin = async (payload: IUserLoginPayload) => {
