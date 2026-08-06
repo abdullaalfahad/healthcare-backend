@@ -28,15 +28,27 @@ const patientRegister = async (payload: IPatientRegisterPayload) => {
   }
 
   const patient = await prisma.$transaction(async (tx) => {
-    const newPatient = await tx.patient.create({
-      data: {
-        name,
-        email,
-        userId: data.user.id,
-      },
-    });
+    try {
+      const newPatient = await tx.patient.create({
+        data: {
+          name,
+          email,
+          userId: data.user.id,
+        },
+      });
 
-    return newPatient;
+      return newPatient;
+    } catch (error) {
+      console.error('Error creating patient:', error);
+      prisma.user.delete({
+        where: {
+          id: data.user.id,
+        },
+      });
+      throw new Error(
+        error instanceof Error ? error.message : 'Unknown error occurred while creating patient'
+      );
+    }
   });
 
   return {
