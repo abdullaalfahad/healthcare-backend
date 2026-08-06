@@ -7,11 +7,7 @@ export const catchAsync = (fn: asyncHandler) => {
     try {
       await fn(req, res, next);
     } catch (err) {
-      res.status(500).json({
-        success: false,
-        message: 'Something went wrong',
-        error: err instanceof Error ? err.message : String(err),
-      });
+      next(err);
     }
   };
 };
