@@ -1,3 +1,5 @@
+import status from 'http-status';
+import AppError from '../../errorHelpers/appError';
 import { auth } from '../../lib/auth';
 import { prisma } from '../../lib/prisma';
 
@@ -24,7 +26,7 @@ const patientRegister = async (payload: IPatientRegisterPayload) => {
   });
 
   if (!data.user) {
-    throw new Error('User registration failed');
+    throw new AppError('User registration failed', status.BAD_REQUEST);
   }
 
   const patient = await prisma.$transaction(async (tx) => {
@@ -39,14 +41,14 @@ const patientRegister = async (payload: IPatientRegisterPayload) => {
 
       return newPatient;
     } catch (error) {
-      console.error('Error creating patient:', error);
       prisma.user.delete({
         where: {
           id: data.user.id,
         },
       });
-      throw new Error(
-        error instanceof Error ? error.message : 'Unknown error occurred while creating patient'
+      throw new AppError(
+        error instanceof Error ? error.message : 'Unknown error occurred while creating patient',
+        status.INTERNAL_SERVER_ERROR
       );
     }
   });
