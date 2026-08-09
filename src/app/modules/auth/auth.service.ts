@@ -54,9 +54,24 @@ const patientRegister = async (payload: IPatientRegisterPayload) => {
     }
   });
 
+  const tokenPayload = {
+    userId: data.user.id,
+    role: data.user.role,
+    email: data.user.email,
+    name: data.user.name,
+    emailVerified: data.user.emailVerified,
+    isDeleted: data.user.isDeleted,
+    deletedAt: data.user.deletedAt,
+  };
+
+  const accessToken = tokenUtils.getAccessToken(tokenPayload);
+  const refreshToken = tokenUtils.getRefreshToken(tokenPayload);
+
   return {
     ...data,
     patient,
+    accessToken,
+    refreshToken,
   };
 };
 
