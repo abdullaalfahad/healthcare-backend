@@ -5,6 +5,8 @@ import { userRoutes } from '../modules/user/user.route';
 
 const router = Router();
 
+console.log('hit');
+
 router.use('/auth', AuthRoutes);
 router.use('/users', userRoutes);
 router.use('/specialities', SpecialityRoutes);

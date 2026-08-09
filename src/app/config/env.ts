@@ -10,6 +10,9 @@ interface EnvVariables {
   DATABASE_URL: string;
   BETTER_AUTH_SECRET: string;
   BETTER_AUTH_URL: string;
+  JWT_SECRET: string;
+  ACCESS_TOKEN_EXPIRATION: string;
+  REFRESH_TOKEN_EXPIRATION: string;
 }
 
 const loadEnvVariables = (): EnvVariables => {
@@ -19,6 +22,9 @@ const loadEnvVariables = (): EnvVariables => {
     'DATABASE_URL',
     'BETTER_AUTH_SECRET',
     'BETTER_AUTH_URL',
+    'JWT_SECRET',
+    'ACCESS_TOKEN_EXPIRATION',
+    'REFRESH_TOKEN_EXPIRATION',
   ];
 
   requiredEnvVars.forEach((varName) => {
@@ -36,6 +42,9 @@ const loadEnvVariables = (): EnvVariables => {
     DATABASE_URL: process.env.DATABASE_URL || '',
     BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET || '',
     BETTER_AUTH_URL: process.env.BETTER_AUTH_URL || '',
+    JWT_SECRET: process.env.JWT_SECRET || '',
+    ACCESS_TOKEN_EXPIRATION: process.env.ACCESS_TOKEN_EXPIRATION || '1d',
+    REFRESH_TOKEN_EXPIRATION: process.env.REFRESH_TOKEN_EXPIRATION || '7d',
   };
 };
 

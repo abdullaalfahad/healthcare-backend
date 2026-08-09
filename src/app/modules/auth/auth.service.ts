@@ -2,6 +2,7 @@ import status from 'http-status';
 import AppError from '../../errorHelpers/appError';
 import { auth } from '../../lib/auth';
 import { prisma } from '../../lib/prisma';
+import { tokenUtils } from '../../utils/token';
 
 interface IPatientRegisterPayload {
   name: string;
@@ -69,7 +70,24 @@ const userLogin = async (payload: IUserLoginPayload) => {
     },
   });
 
-  return data;
+  const tokenPayload = {
+    userId: data.user.id,
+    role: data.user.role,
+    email: data.user.email,
+    name: data.user.name,
+    emailVerified: data.user.emailVerified,
+    isDeleted: data.user.isDeleted,
+    deletedAt: data.user.deletedAt,
+  };
+
+  const accessToken = tokenUtils.getAccessToken(tokenPayload);
+  const refreshToken = tokenUtils.getRefreshToken(tokenPayload);
+
+  return {
+    ...data,
+    accessToken,
+    refreshToken,
+  };
 };
 
 export const AuthService = {
