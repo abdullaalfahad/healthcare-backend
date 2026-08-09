@@ -5,14 +5,14 @@ import { jwtUtils } from './jwt';
 
 const getAccessToken = (payload: JwtPayload) => {
   const token = jwtUtils.generateToken(payload, envVariables.JWT_SECRET, {
-    expiresIn: envVariables.ACCESS_TOKEN_EXPIRATION,
+    expiresIn: '1d',
   });
   return token;
 };
 
 const getRefreshToken = (payload: JwtPayload) => {
   const token = jwtUtils.generateToken(payload, envVariables.JWT_SECRET, {
-    expiresIn: envVariables.REFRESH_TOKEN_EXPIRATION,
+    expiresIn: '7d',
   });
   return token;
 };
@@ -22,7 +22,7 @@ const setCookieAccessToken = (res: Response, token: string) => {
     httpOnly: true,
     secure: true,
     sameSite: 'none',
-    maxAge: 1000 * 60 * 60 * 24,
+    maxAge: 1000 * 60 * 60 * 24, // 1 day
   });
 };
 
@@ -31,7 +31,7 @@ const setCookieRefreshToken = (res: Response, token: string) => {
     httpOnly: true,
     secure: true,
     sameSite: 'none',
-    maxAge: 1000 * 60 * 60 * 24 * 7,
+    maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
   });
 };
 
@@ -40,7 +40,7 @@ const setCookieSessionToken = (res: Response, token: string) => {
     httpOnly: true,
     secure: true,
     sameSite: 'none',
-    maxAge: 1000 * 60 * 60 * 24,
+    maxAge: 1000 * 60 * 60 * 24, // 1 day
   });
 };
 
