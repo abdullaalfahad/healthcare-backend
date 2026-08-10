@@ -14,7 +14,7 @@ const getDoctorById = async (id: string) => {
   const doctor = await prisma.doctor.findUnique({
     where: { id },
     include: {
-      specialities: true,
+      specialties: true,
     },
   });
 
@@ -22,17 +22,17 @@ const getDoctorById = async (id: string) => {
 };
 
 const updateDoctor = async (id: string, payload: IUpdateDoctorPayload) => {
-  const { doctor, specialities } = payload;
+  const { doctor, specialties } = payload;
 
-  const validSpecialities: ISpeciality[] = await prisma.speciality.findMany({
+  const validSpecialities: ISpeciality[] = await prisma.specialty.findMany({
     where: {
       id: {
-        in: specialities?.map((speciality) => speciality.id),
+        in: specialties?.map((speciality) => speciality.id),
       },
     },
   });
 
-  if (validSpecialities.length !== specialities?.length) {
+  if (validSpecialities.length !== specialties?.length) {
     throw new AppError("Invalid specialities", status.BAD_REQUEST);
   }
 
@@ -54,17 +54,17 @@ const updateDoctor = async (id: string, payload: IUpdateDoctorPayload) => {
 
       for (const speciality of specialities ?? []) {
         if (speciality.shouldDelete) {
-          await tx.doctorSpeciality.deleteMany({
+          await tx.doctorSpecialty.deleteMany({
             where: {
               doctorId: id,
               specialityId: speciality.id,
             },
           });
         } else {
-          await tx.doctorSpeciality.create({
+          await tx.doctorSpecialty.create({
             data: {
               doctorId: id,
-              specialityId: speciality.id,
+              specialtyId: speciality.id,
             },
           });
         }
@@ -94,7 +94,7 @@ const deleteDoctor = async (id: string) => {
   const deletedAt = new Date();
 
   const deletedDoctor = await prisma.$transaction(async (tx) => {
-    await tx.doctorSpeciality.updateMany({
+    await tx.doctorSpecialty.updateMany({
       where: { doctorId: id, isDeleted: false },
       data: { isDeleted: true, deletedAt },
     });

@@ -1,5 +1,5 @@
 import status from "http-status";
-import { Speciality } from "../../../generated/prisma/client";
+import { Specialty } from "../../../generated/prisma/client";
 import { Role } from "../../../generated/prisma/enums";
 import AppError from "../../errorHelpers/appError";
 import { auth } from "../../lib/auth";
@@ -7,10 +7,10 @@ import { prisma } from "../../lib/prisma";
 import { ICreateAdminPayload, ICreateDoctorPayload } from "./user.interface";
 
 const createDoctor = async (payload: ICreateDoctorPayload) => {
-  const specialities: Speciality[] = [];
+  const specialities: Specialty[] = [];
 
-  for (const specialityId of payload.specialities) {
-    const specialityData = await prisma.speciality.findUnique({
+  for (const specialityId of payload.specialties) {
+    const specialityData = await prisma.specialty.findUnique({
       where: {
         id: specialityId,
       },
@@ -52,15 +52,15 @@ const createDoctor = async (payload: ICreateDoctorPayload) => {
         },
       });
 
-      const specialitiesData: { doctorId: string; specialityId: string }[] = specialities.map(
-        (speciality) => ({
+      const specialtiesData: { doctorId: string; specialtyId: string }[] = specialities?.map(
+        (specialty) => ({
           doctorId: doctorData.id,
-          specialityId: speciality.id,
+          specialtyId: specialty.id,
         })
       );
 
-      await tx.doctorSpeciality.createMany({
-        data: specialitiesData,
+      await tx.doctorSpecialty.createMany({
+        data: specialtiesData,
       });
 
       return await tx.doctor.findUnique({
@@ -72,17 +72,17 @@ const createDoctor = async (payload: ICreateDoctorPayload) => {
           userId: true,
           name: true,
           email: true,
-          profilePicture: true,
+          profilePhoto: true,
           address: true,
-          phone: true,
+          contactNumber: true,
           experience: true,
           currentWorkingPlace: true,
           registrationNumber: true,
           gender: true,
           appointmentFee: true,
-          specialities: {
+          specialties: {
             select: {
-              speciality: {
+              specialty: {
                 select: {
                   id: true,
                   title: true,

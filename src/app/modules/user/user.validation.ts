@@ -6,9 +6,9 @@ export const createDoctorZodSchema = z.object({
   doctor: z.object({
     name: z.string("Name must be a string").min(1, "Name is required"),
     email: z.email("Invalid email address"),
-    profilePicture: z.string().optional(),
+    profilePhoto: z.string().optional(),
     address: z.string().optional(),
-    phone: z.string().optional(),
+    contactNumber: z.string().optional(),
     experience: z.number().min(0).optional(),
     currentWorkingPlace: z.string().optional(),
     registrationNumber: z.string().min(1, "Registration number is required"),
@@ -17,11 +17,11 @@ export const createDoctorZodSchema = z.object({
       "Gender must be one of the following: male, female, other"
     ),
     appointmentFee: z.number().min(0, "Appointment fee must be positive"),
-    qualifications: z.string().optional(),
+    qualification: z.string().optional(),
     designation: z.string().optional(),
     averageRating: z.number().min(0).max(5).optional(),
   }),
-  specialities: z.array(z.uuid()).min(1, "At least one speciality is required"),
+  specialties: z.array(z.uuid()).min(1, "At least one speciality is required"),
 });
 
 export const createAdminZodSchema = z.object({

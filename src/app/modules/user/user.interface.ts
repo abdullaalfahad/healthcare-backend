@@ -5,15 +5,15 @@ export interface ICreateDoctorPayload {
   doctor: {
     name: string;
     email: string;
-    profilePicture?: string;
+    profilePhoto?: string;
     address?: string;
-    phone?: string;
+    contactNumber?: string;
     experience?: number;
     currentWorkingPlace?: string;
     registrationNumber: string;
     gender: Gender;
     appointmentFee: number;
-    qualifications?: string;
+    qualification?: string;
     designation?: string;
     averageRating?: number;
   };

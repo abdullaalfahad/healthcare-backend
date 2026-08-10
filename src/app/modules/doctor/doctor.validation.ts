@@ -4,7 +4,7 @@ export const updateDoctorZodSchema = z.object({
   doctor: z.object({
     name: z.string().optional(),
     email: z.string().email().optional(),
-    profilePicture: z.string().optional(),
+    profilePhoto: z.string().optional(),
     address: z.string().optional(),
     phone: z.string().optional(),
     experience: z.number().optional(),
@@ -12,7 +12,7 @@ export const updateDoctorZodSchema = z.object({
     registrationNumber: z.string().optional(),
     gender: z.string().optional(),
     appointmentFee: z.number().optional(),
-    qualifications: z.string().optional(),
+    qualification: z.string().optional(),
     designation: z.string().optional(),
     averageRating: z.number().optional(),
   }),
