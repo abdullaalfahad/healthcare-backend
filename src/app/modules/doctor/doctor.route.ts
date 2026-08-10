@@ -19,4 +19,9 @@ router.put(
   validateRequest(updateDoctorZodSchema),
   doctorController.updateDoctor
 );
+router.delete(
+  "/:id",
+  checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
+  doctorController.deleteDoctor
+);
 export const DoctorRoutes = router;
