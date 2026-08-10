@@ -17,7 +17,7 @@ export const auth = betterAuth({
         type: 'string',
         defaultValue: Role.PATIENT,
         required: true,
-        input: false,
+        input: true,
       },
       status: {
         type: 'string',
@@ -29,7 +29,7 @@ export const auth = betterAuth({
         type: 'boolean',
         defaultValue: false,
         required: true,
-        input: false,
+        input: true,
       },
       isDeleted: {
         type: 'boolean',

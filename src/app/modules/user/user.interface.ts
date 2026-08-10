@@ -1,4 +1,4 @@
-import { Gender } from '../../../generated/prisma/enums';
+import { Gender } from "../../../generated/prisma/enums";
 
 export interface ICreateDoctorPayload {
   password: string;
@@ -18,4 +18,15 @@ export interface ICreateDoctorPayload {
     averageRating?: number;
   };
   specialities: string[];
+}
+
+export interface ICreateAdminPayload {
+  password: string;
+  admin: {
+    name: string;
+    email: string;
+    profilePicture?: string;
+    contactNumber?: string;
+  };
+  role: "ADMIN" | "SUPER_ADMIN";
 }

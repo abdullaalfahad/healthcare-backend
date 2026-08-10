@@ -4,7 +4,7 @@ import { Role } from "../../../generated/prisma/enums";
 import AppError from "../../errorHelpers/appError";
 import { auth } from "../../lib/auth";
 import { prisma } from "../../lib/prisma";
-import { ICreateDoctorPayload } from "./user.interface";
+import { ICreateAdminPayload, ICreateDoctorPayload } from "./user.interface";
 
 const createDoctor = async (payload: ICreateDoctorPayload) => {
   const specialities: Speciality[] = [];
@@ -33,26 +33,18 @@ const createDoctor = async (payload: ICreateDoctorPayload) => {
     throw new AppError("User with this email already exists", status.CONFLICT);
   }
 
-  // additionalFields have input: false in auth config, so role/needPasswordChange
-  // cannot be set via signUpEmail — update them on the user row after signup.
   const user = await auth.api.signUpEmail({
     body: {
       email: payload.doctor.email,
       name: payload.doctor.name,
       password: payload.password,
+      role: Role.DOCTOR,
+      needPasswordChange: true,
     },
   });
 
   try {
     const doctor = await prisma.$transaction(async (tx) => {
-      await tx.user.update({
-        where: { id: user.user.id },
-        data: {
-          role: Role.DOCTOR,
-          needPasswordChange: true,
-        },
-      });
-
       const doctorData = await tx.doctor.create({
         data: {
           userId: user.user.id,
@@ -114,6 +106,49 @@ const createDoctor = async (payload: ICreateDoctorPayload) => {
   }
 };
 
+const createAdmin = async (payload: ICreateAdminPayload) => {
+  const existingUser = await prisma.user.findUnique({
+    where: {
+      email: payload.admin.email,
+    },
+  });
+
+  if (existingUser) {
+    throw new AppError("User with this email already exists", status.CONFLICT);
+  }
+
+  const { admin, password, role } = payload;
+
+  const user = await auth.api.signUpEmail({
+    body: {
+      name: admin.name,
+      email: admin.email,
+      password,
+      role,
+      needPasswordChange: true,
+    },
+  });
+
+  try {
+    await prisma.admin.create({
+      data: {
+        userId: user.user.id,
+        ...admin,
+      },
+    });
+  } catch (error) {
+    await prisma.user.delete({
+      where: {
+        email: admin.email,
+      },
+    });
+    throw error;
+  }
+
+  return user;
+};
+
 export const userService = {
   createDoctor,
+  createAdmin,
 };
