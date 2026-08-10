@@ -1,8 +1,8 @@
-import status from 'http-status';
-import AppError from '../../errorHelpers/appError';
-import { auth } from '../../lib/auth';
-import { prisma } from '../../lib/prisma';
-import { tokenUtils } from '../../utils/token';
+import status from "http-status";
+import AppError from "../../errorHelpers/appError";
+import { auth } from "../../lib/auth";
+import { prisma } from "../../lib/prisma";
+import { tokenUtils } from "../../utils/token";
 
 interface IPatientRegisterPayload {
   name: string;
@@ -14,6 +14,32 @@ interface IUserLoginPayload {
   email: string;
   password: string;
 }
+
+const getAuthUser = async (userId: string) => {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      emailVerified: true,
+      image: true,
+      role: true,
+      status: true,
+      needPasswordChange: true,
+      isDeleted: true,
+      deletedAt: true,
+      createdAt: true,
+      updatedAt: true,
+    },
+  });
+
+  if (!user) {
+    throw new AppError("User not found", status.NOT_FOUND);
+  }
+
+  return user;
+};
 
 const patientRegister = async (payload: IPatientRegisterPayload) => {
   const { name, email, password } = payload;
@@ -27,7 +53,7 @@ const patientRegister = async (payload: IPatientRegisterPayload) => {
   });
 
   if (!data.user) {
-    throw new AppError('User registration failed', status.BAD_REQUEST);
+    throw new AppError("User registration failed", status.BAD_REQUEST);
   }
 
   const patient = await prisma.$transaction(async (tx) => {
@@ -48,20 +74,22 @@ const patientRegister = async (payload: IPatientRegisterPayload) => {
         },
       });
       throw new AppError(
-        error instanceof Error ? error.message : 'Unknown error occurred while creating patient',
+        error instanceof Error ? error.message : "Unknown error occurred while creating patient",
         status.INTERNAL_SERVER_ERROR
       );
     }
   });
 
+  const user = await getAuthUser(data.user.id);
+
   const tokenPayload = {
-    userId: data.user.id,
-    role: data.user.role,
-    email: data.user.email,
-    name: data.user.name,
-    emailVerified: data.user.emailVerified,
-    isDeleted: data.user.isDeleted,
-    deletedAt: data.user.deletedAt,
+    userId: user.id,
+    role: user.role,
+    email: user.email,
+    name: user.name,
+    emailVerified: user.emailVerified,
+    isDeleted: user.isDeleted,
+    deletedAt: user.deletedAt,
   };
 
   const accessToken = tokenUtils.getAccessToken(tokenPayload);
@@ -69,6 +97,7 @@ const patientRegister = async (payload: IPatientRegisterPayload) => {
 
   return {
     ...data,
+    user,
     patient,
     accessToken,
     refreshToken,
@@ -85,14 +114,16 @@ const userLogin = async (payload: IUserLoginPayload) => {
     },
   });
 
+  const user = await getAuthUser(data.user.id);
+
   const tokenPayload = {
-    userId: data.user.id,
-    role: data.user.role,
-    email: data.user.email,
-    name: data.user.name,
-    emailVerified: data.user.emailVerified,
-    isDeleted: data.user.isDeleted,
-    deletedAt: data.user.deletedAt,
+    userId: user.id,
+    role: user.role,
+    email: user.email,
+    name: user.name,
+    emailVerified: user.emailVerified,
+    isDeleted: user.isDeleted,
+    deletedAt: user.deletedAt,
   };
 
   const accessToken = tokenUtils.getAccessToken(tokenPayload);
@@ -100,6 +131,7 @@ const userLogin = async (payload: IUserLoginPayload) => {
 
   return {
     ...data,
+    user,
     accessToken,
     refreshToken,
   };

@@ -11,31 +11,36 @@ export const auth = betterAuth({
     enabled: true,
   },
 
-  users: {
+  user: {
     additionalFields: {
       role: {
         type: 'string',
         defaultValue: Role.PATIENT,
         required: true,
+        input: false,
       },
       status: {
         type: 'string',
         defaultValue: UserStatus.ACTIVE,
         required: true,
+        input: false,
       },
       needPasswordChange: {
         type: 'boolean',
         defaultValue: false,
         required: true,
+        input: false,
       },
       isDeleted: {
         type: 'boolean',
         defaultValue: false,
         required: true,
+        input: false,
       },
       deletedAt: {
         type: 'date',
         required: false,
+        input: false,
       },
     },
   },
