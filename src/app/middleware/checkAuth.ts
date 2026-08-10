@@ -3,6 +3,7 @@ import status from "http-status";
 import { UserStatus } from "../../generated/prisma/enums";
 import { envVariables } from "../config/env";
 import AppError from "../errorHelpers/appError";
+import { IRequestUser } from "../interface/requestUser.interface";
 import { prisma } from "../lib/prisma";
 import { cookieUtils } from "../utils/cookie";
 import { jwtUtils } from "../utils/jwt";
@@ -33,7 +34,7 @@ export const checkAuth = (...authRoles: string[]) => {
       }
 
       if (sessionExists) {
-        const user = sessionExists.user;
+        const user: IRequestUser = sessionExists.user;
         const expiresAt = sessionExists.expiresAt;
         const createdAt = sessionExists.createdAt;
         const timePassed = new Date().getTime() - createdAt.getTime();
@@ -57,6 +58,8 @@ export const checkAuth = (...authRoles: string[]) => {
         if (authRoles.length > 0 && !authRoles.includes(user.role)) {
           throw new AppError("You are not authorized to access this resource", status.FORBIDDEN);
         }
+
+        req.user = user;
       }
 
       const accessToken = cookieUtils.getCookie(req, "accessToken");

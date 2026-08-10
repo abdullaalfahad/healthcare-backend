@@ -17,7 +17,7 @@ export interface ICreateDoctorPayload {
     designation?: string;
     averageRating?: number;
   };
-  specialities: string[];
+  specialties: string[];
 }
 
 export interface ICreateAdminPayload {

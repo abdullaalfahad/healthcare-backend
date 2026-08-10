@@ -6,7 +6,7 @@ export const updateDoctorZodSchema = z.object({
     email: z.string().email().optional(),
     profilePhoto: z.string().optional(),
     address: z.string().optional(),
-    phone: z.string().optional(),
+    contactNumber: z.string().optional(),
     experience: z.number().optional(),
     currentWorkingPlace: z.string().optional(),
     registrationNumber: z.string().optional(),
@@ -16,7 +16,7 @@ export const updateDoctorZodSchema = z.object({
     designation: z.string().optional(),
     averageRating: z.number().optional(),
   }),
-  specialities: z
+  specialties: z
     .array(
       z.object({
         id: z.string(),

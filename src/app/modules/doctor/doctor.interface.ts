@@ -43,5 +43,5 @@ export interface IUpdateDoctorPayload {
     designation?: string;
     averageRating?: number;
   };
-  specialities?: ISpeciality[];
+  specialties?: ISpeciality[];
 }
