@@ -27,21 +27,19 @@ export type AggregateDoctor = {
 }
 
 export type DoctorAvgAggregateOutputType = {
-  id: number | null
   experience: number | null
   appointmentFee: number | null
   averageRating: number | null
 }
 
 export type DoctorSumAggregateOutputType = {
-  id: number | null
   experience: number | null
   appointmentFee: number | null
   averageRating: number | null
 }
 
 export type DoctorMinAggregateOutputType = {
-  id: number | null
+  id: string | null
   name: string | null
   email: string | null
   profilePicture: string | null
@@ -63,7 +61,7 @@ export type DoctorMinAggregateOutputType = {
 }
 
 export type DoctorMaxAggregateOutputType = {
-  id: number | null
+  id: string | null
   name: string | null
   email: string | null
   profilePicture: string | null
@@ -109,14 +107,12 @@ export type DoctorCountAggregateOutputType = {
 
 
 export type DoctorAvgAggregateInputType = {
-  id?: true
   experience?: true
   appointmentFee?: true
   averageRating?: true
 }
 
 export type DoctorSumAggregateInputType = {
-  id?: true
   experience?: true
   appointmentFee?: true
   averageRating?: true
@@ -276,7 +272,7 @@ export type DoctorGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalA
 }
 
 export type DoctorGroupByOutputType = {
-  id: number
+  id: string
   name: string
   email: string
   profilePicture: string | null
@@ -321,7 +317,7 @@ export type DoctorWhereInput = {
   AND?: Prisma.DoctorWhereInput | Prisma.DoctorWhereInput[]
   OR?: Prisma.DoctorWhereInput[]
   NOT?: Prisma.DoctorWhereInput | Prisma.DoctorWhereInput[]
-  id?: Prisma.IntFilter<"Doctor"> | number
+  id?: Prisma.StringFilter<"Doctor"> | string
   name?: Prisma.StringFilter<"Doctor"> | string
   email?: Prisma.StringFilter<"Doctor"> | string
   profilePicture?: Prisma.StringNullableFilter<"Doctor"> | string | null
@@ -369,7 +365,7 @@ export type DoctorOrderByWithRelationInput = {
 }
 
 export type DoctorWhereUniqueInput = Prisma.AtLeast<{
-  id?: number
+  id?: string
   email?: string
   registrationNumber?: string
   userId?: string
@@ -426,7 +422,7 @@ export type DoctorScalarWhereWithAggregatesInput = {
   AND?: Prisma.DoctorScalarWhereWithAggregatesInput | Prisma.DoctorScalarWhereWithAggregatesInput[]
   OR?: Prisma.DoctorScalarWhereWithAggregatesInput[]
   NOT?: Prisma.DoctorScalarWhereWithAggregatesInput | Prisma.DoctorScalarWhereWithAggregatesInput[]
-  id?: Prisma.IntWithAggregatesFilter<"Doctor"> | number
+  id?: Prisma.StringWithAggregatesFilter<"Doctor"> | string
   name?: Prisma.StringWithAggregatesFilter<"Doctor"> | string
   email?: Prisma.StringWithAggregatesFilter<"Doctor"> | string
   profilePicture?: Prisma.StringNullableWithAggregatesFilter<"Doctor"> | string | null
@@ -448,6 +444,7 @@ export type DoctorScalarWhereWithAggregatesInput = {
 }
 
 export type DoctorCreateInput = {
+  id?: string
   name: string
   email: string
   profilePicture?: string | null
@@ -470,7 +467,7 @@ export type DoctorCreateInput = {
 }
 
 export type DoctorUncheckedCreateInput = {
-  id?: number
+  id?: string
   name: string
   email: string
   profilePicture?: string | null
@@ -493,6 +490,7 @@ export type DoctorUncheckedCreateInput = {
 }
 
 export type DoctorUpdateInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   profilePicture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -515,7 +513,7 @@ export type DoctorUpdateInput = {
 }
 
 export type DoctorUncheckedUpdateInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   profilePicture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -538,7 +536,7 @@ export type DoctorUncheckedUpdateInput = {
 }
 
 export type DoctorCreateManyInput = {
-  id?: number
+  id?: string
   name: string
   email: string
   profilePicture?: string | null
@@ -560,6 +558,7 @@ export type DoctorCreateManyInput = {
 }
 
 export type DoctorUpdateManyMutationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   profilePicture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -580,7 +579,7 @@ export type DoctorUpdateManyMutationInput = {
 }
 
 export type DoctorUncheckedUpdateManyInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   profilePicture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -634,7 +633,6 @@ export type DoctorCountOrderByAggregateInput = {
 }
 
 export type DoctorAvgOrderByAggregateInput = {
-  id?: Prisma.SortOrder
   experience?: Prisma.SortOrder
   appointmentFee?: Prisma.SortOrder
   averageRating?: Prisma.SortOrder
@@ -685,7 +683,6 @@ export type DoctorMinOrderByAggregateInput = {
 }
 
 export type DoctorSumOrderByAggregateInput = {
-  id?: Prisma.SortOrder
   experience?: Prisma.SortOrder
   appointmentFee?: Prisma.SortOrder
   averageRating?: Prisma.SortOrder
@@ -758,14 +755,6 @@ export type FloatFieldUpdateOperationsInput = {
   divide?: number
 }
 
-export type IntFieldUpdateOperationsInput = {
-  set?: number
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
-}
-
 export type DoctorCreateNestedOneWithoutSpecialitiesInput = {
   create?: Prisma.XOR<Prisma.DoctorCreateWithoutSpecialitiesInput, Prisma.DoctorUncheckedCreateWithoutSpecialitiesInput>
   connectOrCreate?: Prisma.DoctorCreateOrConnectWithoutSpecialitiesInput
@@ -781,6 +770,7 @@ export type DoctorUpdateOneRequiredWithoutSpecialitiesNestedInput = {
 }
 
 export type DoctorCreateWithoutUserInput = {
+  id?: string
   name: string
   email: string
   profilePicture?: string | null
@@ -802,7 +792,7 @@ export type DoctorCreateWithoutUserInput = {
 }
 
 export type DoctorUncheckedCreateWithoutUserInput = {
-  id?: number
+  id?: string
   name: string
   email: string
   profilePicture?: string | null
@@ -853,7 +843,7 @@ export type DoctorScalarWhereInput = {
   AND?: Prisma.DoctorScalarWhereInput | Prisma.DoctorScalarWhereInput[]
   OR?: Prisma.DoctorScalarWhereInput[]
   NOT?: Prisma.DoctorScalarWhereInput | Prisma.DoctorScalarWhereInput[]
-  id?: Prisma.IntFilter<"Doctor"> | number
+  id?: Prisma.StringFilter<"Doctor"> | string
   name?: Prisma.StringFilter<"Doctor"> | string
   email?: Prisma.StringFilter<"Doctor"> | string
   profilePicture?: Prisma.StringNullableFilter<"Doctor"> | string | null
@@ -875,6 +865,7 @@ export type DoctorScalarWhereInput = {
 }
 
 export type DoctorCreateWithoutSpecialitiesInput = {
+  id?: string
   name: string
   email: string
   profilePicture?: string | null
@@ -896,7 +887,7 @@ export type DoctorCreateWithoutSpecialitiesInput = {
 }
 
 export type DoctorUncheckedCreateWithoutSpecialitiesInput = {
-  id?: number
+  id?: string
   name: string
   email: string
   profilePicture?: string | null
@@ -934,6 +925,7 @@ export type DoctorUpdateToOneWithWhereWithoutSpecialitiesInput = {
 }
 
 export type DoctorUpdateWithoutSpecialitiesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   profilePicture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -955,7 +947,7 @@ export type DoctorUpdateWithoutSpecialitiesInput = {
 }
 
 export type DoctorUncheckedUpdateWithoutSpecialitiesInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   profilePicture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -977,7 +969,7 @@ export type DoctorUncheckedUpdateWithoutSpecialitiesInput = {
 }
 
 export type DoctorCreateManyUserInput = {
-  id?: number
+  id?: string
   name: string
   email: string
   profilePicture?: string | null
@@ -998,6 +990,7 @@ export type DoctorCreateManyUserInput = {
 }
 
 export type DoctorUpdateWithoutUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   profilePicture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1019,7 +1012,7 @@ export type DoctorUpdateWithoutUserInput = {
 }
 
 export type DoctorUncheckedUpdateWithoutUserInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   profilePicture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1041,7 +1034,7 @@ export type DoctorUncheckedUpdateWithoutUserInput = {
 }
 
 export type DoctorUncheckedUpdateManyWithoutUserInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   profilePicture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1205,7 +1198,7 @@ export type $DoctorPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     specialities: Prisma.$DoctorSpecialityPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
-    id: number
+    id: string
     name: string
     email: string
     profilePicture: string | null
@@ -1649,7 +1642,7 @@ export interface Prisma__DoctorClient<T, Null = never, ExtArgs extends runtime.T
  * Fields of the Doctor model
  */
 export interface DoctorFieldRefs {
-  readonly id: Prisma.FieldRef<"Doctor", 'Int'>
+  readonly id: Prisma.FieldRef<"Doctor", 'String'>
   readonly name: Prisma.FieldRef<"Doctor", 'String'>
   readonly email: Prisma.FieldRef<"Doctor", 'String'>
   readonly profilePicture: Prisma.FieldRef<"Doctor", 'String'>

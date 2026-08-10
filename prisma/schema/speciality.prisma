@@ -16,7 +16,7 @@ model Speciality {
 
 model DoctorSpeciality {
   id String @id @default(uuid(7))
-  doctorId Int
+  doctorId String
   specialityId String
   isDeleted Boolean @default(false)
   deletedAt DateTime?

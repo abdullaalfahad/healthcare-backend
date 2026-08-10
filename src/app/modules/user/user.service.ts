@@ -1,10 +1,10 @@
-import status from 'http-status';
-import { Speciality } from '../../../generated/prisma/client';
-import { Role } from '../../../generated/prisma/enums';
-import AppError from '../../errorHelpers/appError';
-import { auth } from '../../lib/auth';
-import { prisma } from '../../lib/prisma';
-import { ICreateDoctorPayload } from './user.interface';
+import status from "http-status";
+import { Speciality } from "../../../generated/prisma/client";
+import { Role } from "../../../generated/prisma/enums";
+import AppError from "../../errorHelpers/appError";
+import { auth } from "../../lib/auth";
+import { prisma } from "../../lib/prisma";
+import { ICreateDoctorPayload } from "./user.interface";
 
 const createDoctor = async (payload: ICreateDoctorPayload) => {
   const specialities: Speciality[] = [];
@@ -30,21 +30,29 @@ const createDoctor = async (payload: ICreateDoctorPayload) => {
   });
 
   if (existingUser) {
-    throw new AppError('User with this email already exists', status.CONFLICT);
+    throw new AppError("User with this email already exists", status.CONFLICT);
   }
 
+  // additionalFields have input: false in auth config, so role/needPasswordChange
+  // cannot be set via signUpEmail — update them on the user row after signup.
   const user = await auth.api.signUpEmail({
     body: {
       email: payload.doctor.email,
       name: payload.doctor.name,
       password: payload.password,
-      role: Role.DOCTOR,
-      needPasswordChange: true,
     },
   });
 
   try {
     const doctor = await prisma.$transaction(async (tx) => {
+      await tx.user.update({
+        where: { id: user.user.id },
+        data: {
+          role: Role.DOCTOR,
+          needPasswordChange: true,
+        },
+      });
+
       const doctorData = await tx.doctor.create({
         data: {
           userId: user.user.id,

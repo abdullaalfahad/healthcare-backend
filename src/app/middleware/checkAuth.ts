@@ -68,6 +68,7 @@ export const checkAuth = (...authRoles: string[]) => {
       const verifiyToken = jwtUtils.verifyToken(accessToken, envVariables.JWT_SECRET);
 
       if (!verifiyToken) {
+        console.log("Unauthorized! Please login to continue");
         throw new AppError("Unauthorized! Please login to continue", status.UNAUTHORIZED);
       }
 

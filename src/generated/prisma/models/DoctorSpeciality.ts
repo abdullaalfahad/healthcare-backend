@@ -20,23 +20,13 @@ export type DoctorSpecialityModel = runtime.Types.Result.DefaultSelection<Prisma
 
 export type AggregateDoctorSpeciality = {
   _count: DoctorSpecialityCountAggregateOutputType | null
-  _avg: DoctorSpecialityAvgAggregateOutputType | null
-  _sum: DoctorSpecialitySumAggregateOutputType | null
   _min: DoctorSpecialityMinAggregateOutputType | null
   _max: DoctorSpecialityMaxAggregateOutputType | null
 }
 
-export type DoctorSpecialityAvgAggregateOutputType = {
-  doctorId: number | null
-}
-
-export type DoctorSpecialitySumAggregateOutputType = {
-  doctorId: number | null
-}
-
 export type DoctorSpecialityMinAggregateOutputType = {
   id: string | null
-  doctorId: number | null
+  doctorId: string | null
   specialityId: string | null
   isDeleted: boolean | null
   deletedAt: Date | null
@@ -46,7 +36,7 @@ export type DoctorSpecialityMinAggregateOutputType = {
 
 export type DoctorSpecialityMaxAggregateOutputType = {
   id: string | null
-  doctorId: number | null
+  doctorId: string | null
   specialityId: string | null
   isDeleted: boolean | null
   deletedAt: Date | null
@@ -65,14 +55,6 @@ export type DoctorSpecialityCountAggregateOutputType = {
   _all: number
 }
 
-
-export type DoctorSpecialityAvgAggregateInputType = {
-  doctorId?: true
-}
-
-export type DoctorSpecialitySumAggregateInputType = {
-  doctorId?: true
-}
 
 export type DoctorSpecialityMinAggregateInputType = {
   id?: true
@@ -143,18 +125,6 @@ export type DoctorSpecialityAggregateArgs<ExtArgs extends runtime.Types.Extensio
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
-   * Select which fields to average
-  **/
-  _avg?: DoctorSpecialityAvgAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
-   * Select which fields to sum
-  **/
-  _sum?: DoctorSpecialitySumAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
    * Select which fields to find the minimum value
   **/
   _min?: DoctorSpecialityMinAggregateInputType
@@ -185,23 +155,19 @@ export type DoctorSpecialityGroupByArgs<ExtArgs extends runtime.Types.Extensions
   take?: number
   skip?: number
   _count?: DoctorSpecialityCountAggregateInputType | true
-  _avg?: DoctorSpecialityAvgAggregateInputType
-  _sum?: DoctorSpecialitySumAggregateInputType
   _min?: DoctorSpecialityMinAggregateInputType
   _max?: DoctorSpecialityMaxAggregateInputType
 }
 
 export type DoctorSpecialityGroupByOutputType = {
   id: string
-  doctorId: number
+  doctorId: string
   specialityId: string
   isDeleted: boolean
   deletedAt: Date | null
   createdAt: Date
   updatedAt: Date
   _count: DoctorSpecialityCountAggregateOutputType | null
-  _avg: DoctorSpecialityAvgAggregateOutputType | null
-  _sum: DoctorSpecialitySumAggregateOutputType | null
   _min: DoctorSpecialityMinAggregateOutputType | null
   _max: DoctorSpecialityMaxAggregateOutputType | null
 }
@@ -226,7 +192,7 @@ export type DoctorSpecialityWhereInput = {
   OR?: Prisma.DoctorSpecialityWhereInput[]
   NOT?: Prisma.DoctorSpecialityWhereInput | Prisma.DoctorSpecialityWhereInput[]
   id?: Prisma.StringFilter<"DoctorSpeciality"> | string
-  doctorId?: Prisma.IntFilter<"DoctorSpeciality"> | number
+  doctorId?: Prisma.StringFilter<"DoctorSpeciality"> | string
   specialityId?: Prisma.StringFilter<"DoctorSpeciality"> | string
   isDeleted?: Prisma.BoolFilter<"DoctorSpeciality"> | boolean
   deletedAt?: Prisma.DateTimeNullableFilter<"DoctorSpeciality"> | Date | string | null
@@ -253,7 +219,7 @@ export type DoctorSpecialityWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.DoctorSpecialityWhereInput | Prisma.DoctorSpecialityWhereInput[]
   OR?: Prisma.DoctorSpecialityWhereInput[]
   NOT?: Prisma.DoctorSpecialityWhereInput | Prisma.DoctorSpecialityWhereInput[]
-  doctorId?: Prisma.IntFilter<"DoctorSpeciality"> | number
+  doctorId?: Prisma.StringFilter<"DoctorSpeciality"> | string
   specialityId?: Prisma.StringFilter<"DoctorSpeciality"> | string
   isDeleted?: Prisma.BoolFilter<"DoctorSpeciality"> | boolean
   deletedAt?: Prisma.DateTimeNullableFilter<"DoctorSpeciality"> | Date | string | null
@@ -272,10 +238,8 @@ export type DoctorSpecialityOrderByWithAggregationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.DoctorSpecialityCountOrderByAggregateInput
-  _avg?: Prisma.DoctorSpecialityAvgOrderByAggregateInput
   _max?: Prisma.DoctorSpecialityMaxOrderByAggregateInput
   _min?: Prisma.DoctorSpecialityMinOrderByAggregateInput
-  _sum?: Prisma.DoctorSpecialitySumOrderByAggregateInput
 }
 
 export type DoctorSpecialityScalarWhereWithAggregatesInput = {
@@ -283,7 +247,7 @@ export type DoctorSpecialityScalarWhereWithAggregatesInput = {
   OR?: Prisma.DoctorSpecialityScalarWhereWithAggregatesInput[]
   NOT?: Prisma.DoctorSpecialityScalarWhereWithAggregatesInput | Prisma.DoctorSpecialityScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"DoctorSpeciality"> | string
-  doctorId?: Prisma.IntWithAggregatesFilter<"DoctorSpeciality"> | number
+  doctorId?: Prisma.StringWithAggregatesFilter<"DoctorSpeciality"> | string
   specialityId?: Prisma.StringWithAggregatesFilter<"DoctorSpeciality"> | string
   isDeleted?: Prisma.BoolWithAggregatesFilter<"DoctorSpeciality"> | boolean
   deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"DoctorSpeciality"> | Date | string | null
@@ -303,7 +267,7 @@ export type DoctorSpecialityCreateInput = {
 
 export type DoctorSpecialityUncheckedCreateInput = {
   id?: string
-  doctorId: number
+  doctorId: string
   specialityId: string
   isDeleted?: boolean
   deletedAt?: Date | string | null
@@ -323,7 +287,7 @@ export type DoctorSpecialityUpdateInput = {
 
 export type DoctorSpecialityUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  doctorId?: Prisma.IntFieldUpdateOperationsInput | number
+  doctorId?: Prisma.StringFieldUpdateOperationsInput | string
   specialityId?: Prisma.StringFieldUpdateOperationsInput | string
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -333,7 +297,7 @@ export type DoctorSpecialityUncheckedUpdateInput = {
 
 export type DoctorSpecialityCreateManyInput = {
   id?: string
-  doctorId: number
+  doctorId: string
   specialityId: string
   isDeleted?: boolean
   deletedAt?: Date | string | null
@@ -351,7 +315,7 @@ export type DoctorSpecialityUpdateManyMutationInput = {
 
 export type DoctorSpecialityUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  doctorId?: Prisma.IntFieldUpdateOperationsInput | number
+  doctorId?: Prisma.StringFieldUpdateOperationsInput | string
   specialityId?: Prisma.StringFieldUpdateOperationsInput | string
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -379,10 +343,6 @@ export type DoctorSpecialityCountOrderByAggregateInput = {
   updatedAt?: Prisma.SortOrder
 }
 
-export type DoctorSpecialityAvgOrderByAggregateInput = {
-  doctorId?: Prisma.SortOrder
-}
-
 export type DoctorSpecialityMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   doctorId?: Prisma.SortOrder
@@ -401,10 +361,6 @@ export type DoctorSpecialityMinOrderByAggregateInput = {
   deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-}
-
-export type DoctorSpecialitySumOrderByAggregateInput = {
-  doctorId?: Prisma.SortOrder
 }
 
 export type DoctorSpecialityCreateNestedManyWithoutDoctorInput = {
@@ -540,7 +496,7 @@ export type DoctorSpecialityScalarWhereInput = {
   OR?: Prisma.DoctorSpecialityScalarWhereInput[]
   NOT?: Prisma.DoctorSpecialityScalarWhereInput | Prisma.DoctorSpecialityScalarWhereInput[]
   id?: Prisma.StringFilter<"DoctorSpeciality"> | string
-  doctorId?: Prisma.IntFilter<"DoctorSpeciality"> | number
+  doctorId?: Prisma.StringFilter<"DoctorSpeciality"> | string
   specialityId?: Prisma.StringFilter<"DoctorSpeciality"> | string
   isDeleted?: Prisma.BoolFilter<"DoctorSpeciality"> | boolean
   deletedAt?: Prisma.DateTimeNullableFilter<"DoctorSpeciality"> | Date | string | null
@@ -559,7 +515,7 @@ export type DoctorSpecialityCreateWithoutSpecialityInput = {
 
 export type DoctorSpecialityUncheckedCreateWithoutSpecialityInput = {
   id?: string
-  doctorId: number
+  doctorId: string
   isDeleted?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -630,7 +586,7 @@ export type DoctorSpecialityUncheckedUpdateManyWithoutDoctorInput = {
 
 export type DoctorSpecialityCreateManySpecialityInput = {
   id?: string
-  doctorId: number
+  doctorId: string
   isDeleted?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -648,7 +604,7 @@ export type DoctorSpecialityUpdateWithoutSpecialityInput = {
 
 export type DoctorSpecialityUncheckedUpdateWithoutSpecialityInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  doctorId?: Prisma.IntFieldUpdateOperationsInput | number
+  doctorId?: Prisma.StringFieldUpdateOperationsInput | string
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -657,7 +613,7 @@ export type DoctorSpecialityUncheckedUpdateWithoutSpecialityInput = {
 
 export type DoctorSpecialityUncheckedUpdateManyWithoutSpecialityInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  doctorId?: Prisma.IntFieldUpdateOperationsInput | number
+  doctorId?: Prisma.StringFieldUpdateOperationsInput | string
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -734,7 +690,7 @@ export type $DoctorSpecialityPayload<ExtArgs extends runtime.Types.Extensions.In
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
-    doctorId: number
+    doctorId: string
     specialityId: string
     isDeleted: boolean
     deletedAt: Date | null
@@ -1166,7 +1122,7 @@ export interface Prisma__DoctorSpecialityClient<T, Null = never, ExtArgs extends
  */
 export interface DoctorSpecialityFieldRefs {
   readonly id: Prisma.FieldRef<"DoctorSpeciality", 'String'>
-  readonly doctorId: Prisma.FieldRef<"DoctorSpeciality", 'Int'>
+  readonly doctorId: Prisma.FieldRef<"DoctorSpeciality", 'String'>
   readonly specialityId: Prisma.FieldRef<"DoctorSpeciality", 'String'>
   readonly isDeleted: Prisma.FieldRef<"DoctorSpeciality", 'Boolean'>
   readonly deletedAt: Prisma.FieldRef<"DoctorSpeciality", 'DateTime'>
