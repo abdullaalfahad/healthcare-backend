@@ -1,8 +1,10 @@
 import status from "http-status";
+import { envVariables } from "../../config/env";
 import AppError from "../../errorHelpers/appError";
 import { IRequestUser } from "../../interface/requestUser.interface";
 import { auth } from "../../lib/auth";
 import { prisma } from "../../lib/prisma";
+import { jwtUtils } from "../../utils/jwt";
 import { tokenUtils } from "../../utils/token";
 
 interface IPatientRegisterPayload {
@@ -157,8 +159,57 @@ const getMe = async (user: IRequestUser) => {
   return userData;
 };
 
+const refreshToken = async (refreshToken: string, sessionToken: string) => {
+  const verifiedToken = jwtUtils.verifyToken(refreshToken, envVariables.JWT_SECRET);
+
+  if (!verifiedToken) {
+    throw new AppError("Unauthorized! Please login again", status.UNAUTHORIZED);
+  }
+
+  const session = await prisma.session.findUnique({
+    where: {
+      token: sessionToken,
+    },
+  });
+
+  if (!session) {
+    throw new AppError("Unauthorized! Please login again", status.UNAUTHORIZED);
+  }
+
+  const tokenPayload = {
+    userId: verifiedToken.userId,
+    role: verifiedToken.role,
+    email: verifiedToken.email,
+    name: verifiedToken.name,
+    emailVerified: verifiedToken.emailVerified,
+    isDeleted: verifiedToken.isDeleted,
+    deletedAt: verifiedToken.deletedAt,
+  };
+
+  const accessToken = tokenUtils.getAccessToken(tokenPayload);
+  const newRefreshToken = tokenUtils.getRefreshToken(tokenPayload);
+
+  const updatedSession = await prisma.session.update({
+    where: {
+      token: sessionToken,
+    },
+    data: {
+      token: sessionToken,
+      expiresAt: new Date(Date.now() + 60 * 60 * 1000 * 24), // 1 day
+      updatedAt: new Date(),
+    },
+  });
+
+  return {
+    accessToken,
+    refreshToken: newRefreshToken,
+    sessionToken: updatedSession.token,
+  };
+};
+
 export const AuthService = {
   patientRegister,
   userLogin,
   getMe,
+  refreshToken,
 };

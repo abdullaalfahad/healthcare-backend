@@ -50,8 +50,27 @@ const getMe = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const refreshToken = catchAsync(async (req: Request, res: Response) => {
+  const refreshToken = req.cookies.refreshToken;
+  const sessionToken = req.cookies["better-auth.session_token"];
+
+  const data = await AuthService.refreshToken(refreshToken, sessionToken);
+
+  tokenUtils.setCookieAccessToken(res, data.accessToken);
+  tokenUtils.setCookieRefreshToken(res, data.refreshToken);
+  tokenUtils.setCookieSessionToken(res, data.sessionToken);
+
+  sendResponse(res, {
+    statusCode: status.OK,
+    success: true,
+    message: "New token generated successfully",
+    data,
+  });
+});
+
 export const AuthController = {
   patientRegister,
   userLogin,
   getMe,
+  refreshToken,
 };
