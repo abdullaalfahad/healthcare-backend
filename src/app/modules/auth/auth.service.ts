@@ -6,17 +6,11 @@ import { auth } from "../../lib/auth";
 import { prisma } from "../../lib/prisma";
 import { jwtUtils } from "../../utils/jwt";
 import { tokenUtils } from "../../utils/token";
-
-interface IPatientRegisterPayload {
-  name: string;
-  email: string;
-  password: string;
-}
-
-interface IUserLoginPayload {
-  email: string;
-  password: string;
-}
+import {
+  IChangePasswordPayload,
+  IPatientRegisterPayload,
+  IUserLoginPayload,
+} from "./auth.interface";
 
 const getAuthUser = async (userId: string) => {
   const user = await prisma.user.findUnique({
@@ -207,9 +201,54 @@ const refreshToken = async (refreshToken: string, sessionToken: string) => {
   };
 };
 
+const changePassword = async (payload: IChangePasswordPayload, sessionToken: string) => {
+  const ValidSession = await auth.api.getSession({
+    headers: new Headers({
+      Authorization: `Bearer ${sessionToken}`,
+    }),
+  });
+
+  if (!ValidSession) {
+    throw new AppError("Unauthorized! Please login again", status.UNAUTHORIZED);
+  }
+
+  const { currentPassword, newPassword } = payload;
+
+  const response = await auth.api.changePassword({
+    body: {
+      currentPassword,
+      newPassword,
+      revokeOtherSessions: true,
+    },
+    headers: new Headers({
+      Authorization: `Bearer ${sessionToken}`,
+    }),
+  });
+
+  const tokenPayload = {
+    userId: ValidSession.user.id,
+    role: ValidSession.user.role,
+    email: ValidSession.user.email,
+    name: ValidSession.user.name,
+    emailVerified: ValidSession.user.emailVerified,
+    isDeleted: ValidSession.user.isDeleted,
+    deletedAt: ValidSession.user.deletedAt,
+  };
+
+  const accessToken = tokenUtils.getAccessToken(tokenPayload);
+  const refreshToken = tokenUtils.getRefreshToken(tokenPayload);
+
+  return {
+    ...response,
+    accessToken,
+    refreshToken,
+  };
+};
+
 export const AuthService = {
   patientRegister,
   userLogin,
   getMe,
   refreshToken,
+  changePassword,
 };

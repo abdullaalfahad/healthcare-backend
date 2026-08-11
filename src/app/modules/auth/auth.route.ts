@@ -1,7 +1,9 @@
 import { Router } from "express";
 import { Role } from "../../../generated/prisma/enums";
 import { checkAuth } from "../../middleware/checkAuth";
+import { validateRequest } from "../../middleware/validateRequest";
 import { AuthController } from "./auth.controller";
+import { changeePasswordZodSchema } from "./auth.validation";
 
 const router = Router();
 
@@ -16,5 +18,12 @@ router.get(
 );
 
 router.post("/refresh-token", AuthController.refreshToken);
+
+router.post(
+  "/change-password",
+  checkAuth(Role.PATIENT, Role.ADMIN, Role.DOCTOR, Role.SUPER_ADMIN),
+  validateRequest(changeePasswordZodSchema),
+  AuthController.changePassword
+);
 
 export const AuthRoutes = router;

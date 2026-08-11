@@ -1,11 +1,12 @@
-import { betterAuth } from 'better-auth';
-import { prismaAdapter } from 'better-auth/adapters/prisma';
-import { Role, UserStatus } from '../../generated/prisma/enums';
-import { prisma } from './prisma';
+import { betterAuth } from "better-auth";
+import { prismaAdapter } from "better-auth/adapters/prisma";
+import { bearer } from "better-auth/plugins";
+import { Role, UserStatus } from "../../generated/prisma/enums";
+import { prisma } from "./prisma";
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
-    provider: 'postgresql',
+    provider: "postgresql",
   }),
   emailAndPassword: {
     enabled: true,
@@ -14,43 +15,45 @@ export const auth = betterAuth({
   user: {
     additionalFields: {
       role: {
-        type: 'string',
+        type: "string",
         defaultValue: Role.PATIENT,
         required: true,
         input: true,
       },
       status: {
-        type: 'string',
+        type: "string",
         defaultValue: UserStatus.ACTIVE,
         required: true,
         input: false,
       },
       needPasswordChange: {
-        type: 'boolean',
+        type: "boolean",
         defaultValue: false,
         required: true,
         input: true,
       },
       isDeleted: {
-        type: 'boolean',
+        type: "boolean",
         defaultValue: false,
         required: true,
         input: false,
       },
       deletedAt: {
-        type: 'date',
+        type: "date",
         required: false,
         input: false,
       },
     },
   },
 
+  plugins: [bearer()],
+
   session: {
     expiresIn: 60 * 60 * 24, // 1 day
     cookie: {
       httpOnly: true,
       secure: true,
-      sameSite: 'none',
+      sameSite: "none",
       maxAge: 60 * 60 * 24, // 1 day
     },
     cookieCache: {
