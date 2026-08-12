@@ -245,10 +245,31 @@ const changePassword = async (payload: IChangePasswordPayload, sessionToken: str
   };
 };
 
+const verifyEmail = async (email: string, otp: string) => {
+  const response = await auth.api.verifyEmailOTP({
+    body: {
+      email,
+      otp,
+    },
+  });
+
+  if (response.status && !response.user.emailVerified) {
+    await prisma.user.update({
+      where: {
+        email,
+      },
+      data: {
+        emailVerified: true,
+      },
+    });
+  }
+};
+
 export const AuthService = {
   patientRegister,
   userLogin,
   getMe,
   refreshToken,
   changePassword,
+  verifyEmail,
 };
