@@ -245,6 +245,19 @@ const changePassword = async (payload: IChangePasswordPayload, sessionToken: str
   };
 };
 
+const logout = async (sessionToken: string) => {
+  if (!sessionToken) {
+    throw new AppError("Unauthorized! Please login again", status.UNAUTHORIZED);
+  }
+
+  const response = await auth.api.signOut({
+    headers: new Headers({
+      Authorization: `Bearer ${sessionToken}`,
+    }),
+  });
+  return response;
+};
+
 const verifyEmail = async (email: string, otp: string) => {
   const response = await auth.api.verifyEmailOTP({
     body: {
@@ -272,4 +285,5 @@ export const AuthService = {
   refreshToken,
   changePassword,
   verifyEmail,
+  logout,
 };

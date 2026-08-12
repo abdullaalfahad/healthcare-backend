@@ -28,4 +28,6 @@ router.post(
 
 router.post("/verify-email", AuthController.verifyEmail);
 
+router.post("/logout", AuthController.logout);
+
 export const AuthRoutes = router;
