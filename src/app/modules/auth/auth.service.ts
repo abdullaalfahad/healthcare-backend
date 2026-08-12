@@ -1,4 +1,5 @@
 import status from "http-status";
+import { UserStatus } from "../../../generated/prisma/enums";
 import { envVariables } from "../../config/env";
 import AppError from "../../errorHelpers/appError";
 import { IRequestUser } from "../../interface/requestUser.interface";
@@ -202,13 +203,13 @@ const refreshToken = async (refreshToken: string, sessionToken: string) => {
 };
 
 const changePassword = async (payload: IChangePasswordPayload, sessionToken: string) => {
-  const ValidSession = await auth.api.getSession({
+  const validSession = await auth.api.getSession({
     headers: new Headers({
       Authorization: `Bearer ${sessionToken}`,
     }),
   });
 
-  if (!ValidSession) {
+  if (!validSession) {
     throw new AppError("Unauthorized! Please login again", status.UNAUTHORIZED);
   }
 
@@ -225,14 +226,25 @@ const changePassword = async (payload: IChangePasswordPayload, sessionToken: str
     }),
   });
 
+  if (validSession.user.needPasswordChange) {
+    await prisma.user.update({
+      where: {
+        id: validSession.user.id,
+      },
+      data: {
+        needPasswordChange: false,
+      },
+    });
+  }
+
   const tokenPayload = {
-    userId: ValidSession.user.id,
-    role: ValidSession.user.role,
-    email: ValidSession.user.email,
-    name: ValidSession.user.name,
-    emailVerified: ValidSession.user.emailVerified,
-    isDeleted: ValidSession.user.isDeleted,
-    deletedAt: ValidSession.user.deletedAt,
+    userId: validSession.user.id,
+    role: validSession.user.role,
+    email: validSession.user.email,
+    name: validSession.user.name,
+    emailVerified: validSession.user.emailVerified,
+    isDeleted: validSession.user.isDeleted,
+    deletedAt: validSession.user.deletedAt,
   };
 
   const accessToken = tokenUtils.getAccessToken(tokenPayload);
@@ -278,6 +290,81 @@ const verifyEmail = async (email: string, otp: string) => {
   }
 };
 
+const forgetPassword = async (email: string) => {
+  console.log("email", email);
+  const user = await prisma.user.findUnique({
+    where: {
+      email,
+    },
+  });
+
+  if (!user?.id) {
+    throw new AppError("User not found", status.NOT_FOUND);
+  }
+
+  if (!user.emailVerified) {
+    throw new AppError("Email not verified", status.BAD_REQUEST);
+  }
+
+  if (user.isDeleted && user.status.includes(UserStatus.DELETED || UserStatus.BLOCKED)) {
+    throw new AppError("User is deleted or blocked", status.BAD_REQUEST);
+  }
+
+  const response = await auth.api.requestPasswordResetEmailOTP({
+    body: {
+      email,
+    },
+  });
+
+  return response;
+};
+
+const resetPassword = async (email: string, otp: string, newPassword: string) => {
+  const user = await prisma.user.findUnique({
+    where: {
+      email,
+    },
+  });
+  if (!user) {
+    throw new AppError("User not found", status.NOT_FOUND);
+  }
+
+  if (!user.emailVerified) {
+    throw new AppError("Email not verified", status.BAD_REQUEST);
+  }
+
+  if (user.isDeleted && user.status.includes(UserStatus.DELETED || UserStatus.BLOCKED)) {
+    throw new AppError("User is deleted or blocked", status.BAD_REQUEST);
+  }
+
+  const response = await auth.api.resetPasswordEmailOTP({
+    body: {
+      email,
+      otp,
+      password: newPassword,
+    },
+  });
+
+  if (user.needPasswordChange) {
+    await prisma.user.update({
+      where: {
+        email,
+      },
+      data: {
+        needPasswordChange: false,
+      },
+    });
+  }
+
+  await prisma.session.deleteMany({
+    where: {
+      userId: user.id,
+    },
+  });
+
+  return response;
+};
+
 export const AuthService = {
   patientRegister,
   userLogin,
@@ -286,4 +373,6 @@ export const AuthService = {
   changePassword,
   verifyEmail,
   logout,
+  forgetPassword,
+  resetPassword,
 };
